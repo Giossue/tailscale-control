@@ -1,0 +1,90 @@
+{
+  "name": "tailscale-control",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Panel de control local para Tailscale en Linux",
+  "homepage": "https://github.com/giossue/tailscale-control",
+  "author": "giossue",
+  "license": "MIT",
+  "packageManager": "bun@1.3.14",
+  "main": "dist-electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run build:electron && concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && /usr/lib/electron37/electron .\"",
+    "build": "tsc && vite build && bun run build:electron",
+    "build:electron": "tsc -p electron/tsconfig.json",
+    "dist": "bun run build && electron-builder --linux AppImage deb rpm pacman",
+    "dist:dir": "bun run build && electron-builder --linux dir",
+    "start": "/usr/lib/electron37/electron ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@heroui/react": "^2.8.5",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.5.0",
+    "concurrently": "^9.0.0",
+    "electron-builder": "^26.8.1",
+    "framer-motion": "^12.0.0",
+    "lucide-react": "^0.555.0",
+    "postcss": "^8.5.15",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "3.4.17",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0",
+    "wait-on": "^9.0.0"
+  },
+  "build": {
+    "appId": "com.giossue.tailscale-control",
+    "productName": "Tailscale Control",
+    "electronVersion": "37.5.1",
+    "electronDist": "/usr/lib/electron37",
+    "electronLanguages": [
+      "en-US",
+      "es"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "dist-electron/**",
+      "public/**",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm",
+        "pacman"
+      ],
+      "category": "Network",
+      "icon": "build/icons",
+      "maintainer": "giossue",
+      "synopsis": "Panel gráfico para Tailscale en Linux",
+      "description": "Panel de control local para ejecutar comandos oficiales de Tailscale y diagnósticos DNS en Linux."
+    },
+    "deb": {
+      "depends": [
+        "tailscale",
+        "policykit-1 | polkitd"
+      ]
+    },
+    "rpm": {
+      "depends": [
+        "tailscale",
+        "polkit"
+      ]
+    },
+    "pacman": {
+      "depends": [
+        "tailscale",
+        "polkit"
+      ]
+    }
+  }
+}
